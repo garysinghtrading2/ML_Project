@@ -2,6 +2,7 @@
 #include<vector>
 #include "matrix_rotation.h"
 #include "vector_operations.h"
+#include "kde.h"
 using namespace std;
 
 bool CanPerformMatrixMult(const vector<vector<float>>& a, const vector<vector<float>>& b){
@@ -35,24 +36,25 @@ vector<vector<float>> MatrixMult(const vector<vector<float>>& a, const vector<ve
 }
 
 int main(){
-    vector<vector<float>> a = {
-        {2.0f, 5.0f},
-        {40.f, 8.0f},
-        {6.0f, 10.0f}
+    vector<vector<double>> Historical_Data = {
+        {1.0, 2.0},
+        {1.5, 2.5},
+        {2.0, 2.0},
+        {5.0, 6.0},
+        {5.5, 5.5}
     };
 
     vector<vector<float>> b = {
-        {7.0f,8.0f},
-        {9.0f,10.0f},
-        {11.0f,12.0f}
+        {2,0, 2.5},
     }; 
 
     //vector<vector<float>> mat = MatrixMult(a,b);
 
-    vector<float> x1 = {-1.0f, 0.0f, 1.0f};
-    vector<float> x2 = {-2.33f, -0.333f, 2.667f};
+    vector<double> x1 = {2.0, 2.5};
 
-    // dot product:
-    cout << dot_product(x1, x2) << endl; 
+    cout << "Density: " << get_point_density(Historical_Data, x1, 1.0) << endl;
+    
+
+    
     return 0;
 }
