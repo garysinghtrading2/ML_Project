@@ -52,7 +52,8 @@ int main(){
 
     vector<double> x1 = {2.0, 2.5};
 
-    cout << "Density: " << get_point_density(Historical_Data, x1, 1.0) << endl;
+    double pct_ = get_point_density(Historical_Data, x1, 1.0);
+    if(pct_ < 20.0){ cout << "Potential Anomaly" << endl;}
     
 
     
