@@ -3,9 +3,9 @@
 #include<vector>
 
 std::vector<double> squared_distances(const std::vector<std::vector<double>>& Historical, const std::vector<double>& curPoint){
-  if(Historical[0].size() == 0 || Historical.size() == 0){
-    throw throw invalid_argument("Cant perform distance calculations on empty historical data");
-  }
+    if(Historical[0].size() == 0 || Historical.size() == 0){
+      throw throw invalid_argument("Cant perform distance calculations on empty historical data");
+    }
     std::vector<double> distances(Historical.size(), 0.0);
     for(size_t i=0; i<Historical.size(); i++){
         double dist = 0.0;
@@ -20,11 +20,14 @@ std::vector<double> squared_distances(const std::vector<std::vector<double>>& Hi
 
 std::vector<double> GaussianKernel(std::vector<double>& SquareDist, const double p, double h=1.0){
   if(h <= 0.0){
-    throw invalid_argument("H cant be 0 or less");
+    throw invalid_argument("h cant be 0 or less");
   }
     std::vector<double> k_weights(SquareDist.size(), 0.0);
-    double normalization_factor = 1.0/(2.0 * M_PI * (h*h));
+    double normalization_factor = 
+      1.0/(std::pow((2.0 * M_PI),(p/2.0)) * std::pow(h, p));
+
     double dist_contribution_normalizer = 2.0 * (h*h);
+
     for(size_t i=0; i<SquareDist.size(); i++){
         k_weights[i]= normalization_factor * std::exp(-(SquareDist[i])/dist_contribution_normalizer);
     }
@@ -39,7 +42,7 @@ double average(const std::vector<double>& k_weights){
   for(size_t i=0; i<k_weights.size(); i++){
     avg += k_weights[i];
   }
-  avg /= (avg/static_cast<double>(k_weights.size()));
+  avg = (avg/static_cast<double>(k_weights.size()));
   return avg;
 }
 
