@@ -2,26 +2,45 @@
 #include<cmath>
 #include<vector>
 
-std::vector<double> squared_distances(std::vector<std::vector<double>>& Historical, std::vector<double>& curPoint){
+std::vector<double> squared_distances(const std::vector<std::vector<double>>& Historical, const std::vector<double>& curPoint){
+  if(Historical[0].size() == 0 || Historical.size() == 0){
+    throw throw invalid_argument("Cant perform distance calculations on empty historical data");
+  }
     std::vector<double> distances(Historical.size(), 0.0);
     for(size_t i=0; i<Historical.size(); i++){
         double dist = 0.0;
         for(size_t j=0; j<Historical[0].size(); j++){
-            double temp_dist = (Historical[i][j]) - curPoint[j];
-            dist += temp_dist * temp_dist;
+            double difference = (Historical[i][j]) - curPoint[j];
+            dist += difference * difference;
         }
         distances[i] = dist;
     }
     return distances;
 }
 
-std::vector<double> GaussianKernel(std::vector<double>& SquareDist, double h=1.0){
+std::vector<double> GaussianKernel(std::vector<double>& SquareDist, const double p, double h=1.0){
+  if(h <= 0.0){
+    throw invalid_argument("H cant be 0 or less");
+  }
     std::vector<double> k_weights(SquareDist.size(), 0.0);
-    double bandwidth_scaling = 2.0 * (h*h);
+    double normalization_factor = 1.0/(2.0 * M_PI * (h*h));
+    double dist_contribution_normalizer = 2.0 * (h*h);
     for(size_t i=0; i<SquareDist.size(); i++){
-        k_weights[i]=std::exp(-(SquareDist[i])/bandwidth_scaling);
+        k_weights[i]= normalization_factor * std::exp(-(SquareDist[i])/dist_contribution_normalizer);
     }
     return k_weights;
+}
+
+double average(const std::vector<double>& k_weights){
+  if(k_weights.size() == 0){
+    throw invalid_argument("No weights provided, cant continue with operation");
+  }
+  double avg = 0.0;
+  for(size_t i=0; i<k_weights.size(); i++){
+    avg += k_weights[i];
+  }
+  avg /= (avg/static_cast<double>(k_weights.size()));
+  return avg;
 }
 
 std::vector<double> get_all_historical_densities(std::vector<std::vector<double>>& Historical, double h = 1.0) {
